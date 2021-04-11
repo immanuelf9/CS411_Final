@@ -1,83 +1,81 @@
 import './App.css';
 import React, {useState, useEffect} from "react";
 import Axios from 'axios';
+import {Form, Alert, Col, Button} from 'react-bootstrap';
 
 function App() {
-  const [movieName, setMovieName] = useState('');
-  const [Review, setReview] = useState('');
-  const [movieReviewList, setMovieReviewList] = useState([]);
-  const [newReview, setNewReview] = useState("");
+  const [email, setEmail] = useState('');
+  const [pass, setPass] = useState('');
 
-  useEffect(() => {
-    Axios.get('http://localhost:3002/api/get').then((response) => {
-      setMovieReviewList(response.data)
-    })
-  },[])
+  // const [movieName, setMovieName] = useState('');
+  // const [Review, setReview] = useState('');
+  // const [movieReviewList, setMovieReviewList] = useState([]);
+  // const [newReview, setNewReview] = useState("");
 
-  const submitReview = () => { 
-    Axios.post('http://localhost:3002/api/insert', {
-      movieName: movieName,
-      movieReview: Review
-    });
+  // useEffect(() => {
+  //   Axios.get('http://localhost:3002/api/get').then((response) => {
+  //     setMovieReviewList([response.data])
+  //     console.log(response.data)
+  //     // setMovieReviewList([{movieName: "test", movieReview: "test"}])
+  //   })
+  // },[])
+
+  // const submitReview = () => { 
+  //   Axios.post('http://localhost:3002/api/insert', {
+  //     movieName: movieName,
+  //     movieReview: Review
+  //   });
     
-    setMovieReviewList([
-      ...movieReviewList,
-      {
-        movieName: movieName,
-        movieReview: Review
-      },
-    ]);
-  };
+  //   setMovieReviewList([
+  //     ...movieReviewList,
+  //     {
+  //       movieName: movieName,
+  //       movieReview: Review
+  //     },
+  //   ]);
+  // };
 
-  const deleteReview = (movieName) => {
-    Axios.delete(`http://localhost:3002/api/delete/${movieName}`);
-  };
+  // const deleteReview = (movieName) => {
+  //   Axios.delete(`http://localhost:3002/api/delete/${movieName}`);
+  // };
 
-  const updateReview = (movieName) => {
-    Axios.put(`http://localhost:3002/api/update`, {
-      movieName: movieName,
-      movieReview: newReview
+  // const updateReview = (movieName) => {
+  //   Axios.put(`http://localhost:3002/api/update`, {
+  //     movieName: movieName,
+  //     movieReview: newReview
+  //   });
+  //   setNewReview("")
+  // };
+
+  const addUser = (e) => {
+    Axios.post('http://localhost:3002/api/createUser', {
+      ID: email,
+      pass: pass
     });
-    setNewReview("")
-  };
+  }
 
   return (
-    <div className="App">
-      <h1> CRUD APPLICATIONS</h1>
+    <div>
+      <h1 className="App">DiscovEat</h1>
 
-      <div className="form">
-        <label> Movie Name:</label>
-        <input type="text" name="movieName" onChange={(e) => {
-          setMovieName(e.target.value)
-        } }/>
-        <label> Review:</label>
-        <input type="text" name="Review" onChange={(e) => {
-          setReview(e.target.value)
-        }}/>
-        
-        <button onClick={submitReview}> Submit</button>
-
-        {movieReviewList.map((val) => {
-          return (
-            <div className = "card">
-              <h1> MovieName: {val.movieName} </h1>
-              <p>Movie Review: {val.movieReview}</p>
-              <button onClick={() => { deleteReview(val.movieName) }}> Delete</button>
-              <input type="text" id="updateInput" onChange={(e) => {
-                setNewReview(e.target.value)
-              } }/>
-              <button onClick={() => {
-                updateReview(val.movieName)
-              }}> Update</button>
-              </div>
-          );
-          
-          ;
-        })}
-        
-
-      </div>
-      
+        <Col xs={6}>
+          <Alert variant='primary'>
+            Create Account
+          </Alert>
+          <Form>
+            <Form.Group controlId="formBasicEmail">
+              <Form.Label>Email address</Form.Label>
+              <Form.Control type="email" placeholder="Enter email" onChange={(e)=>{setEmail(e.target.value)}}/>
+            </Form.Group>
+            <Form.Group controlId="formBasicPassword">
+              <Form.Label>Password</Form.Label>
+              <Form.Control type="password" placeholder="Password" onChange={(e)=>{setPass(e.target.value)}} />
+            </Form.Group>
+            <Button variant="primary" type="submit" onClick={addUser}>
+              Submit
+            </Button>
+          </Form>
+        </Col>
     </div>
   );
 }
