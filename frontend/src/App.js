@@ -15,6 +15,17 @@ function App() {
   const [newE, setNewE] = useState('');
   const [newPass, setNewPass] = useState('');
 
+  const [prepTime, setPrepTime] = useState('');
+  const [instructions, setInstructions] = useState('');
+
+  const [findRecipeID, setFindRecipeID] = useState('');
+  const [findRecipePrepTime, setFindRecipePrepTime] = useState('');
+  const [findRecipeInstructions, setFindRecipeInstructions] = useState('');
+
+  const [upRecipeID, setUpRecipeID] = useState('');
+  const [upPrepTime, setUpPrepTime] = useState('');
+  const [upInstructions, setUpInstructions] = useState('');
+
   const GET = {
     credentials: "include",
     method: "GET",
@@ -97,10 +108,36 @@ function App() {
     Axios.delete(`http://localhost:3002/api/deleteUser/${upDelUser}`);
   };
 
+  // RECIPE
+
+  const addRecipe = (e) => {
+    Axios.post('http://localhost:3002/api/addRecipe', {
+      prepTime: prepTime,
+      instructions: instructions
+    });
+  }
+
+  const findRecipe = (e) => {
+    let uData = getUserData(findRecipeID);
+    console.log(uData);
+  }
+
+  const updateRecipe = (e) => {
+    Axios.put(`http://localhost:3002/api/updateRecipe`, {
+      ID: upRecipeID,
+      prepTime: upPrepTime,
+      instructions: upInstructions
+    });
+  };
+
+  const deleteRecipe = (e) => {
+    Axios.delete(`http://localhost:3002/api/deleteUser/${upRecipeID}`);
+  };
+
   return (
     <div>
       <h1 className="App">DiscovEat</h1>
-
+      <h2 className="App">Users</h2>
         <Col xs={6}>
           <Alert variant='primary'>Create Account</Alert>
           <Form>
@@ -168,6 +205,75 @@ function App() {
               Submit
             </Button>
           </Form>
+        </Col>
+      <h2 className="App">Recipes</h2>
+        <Col xs={6}>
+          <Alert variant='primary'>Add Recipe</Alert>
+          <Form>
+            <Form.Group>
+              <Form.Label>Prep Time</Form.Label>
+              <Form.Control placeholder="Enter prep time" type="text" onChange={(e)=>{setPrepTime(e.target.value)}}/>
+            </Form.Group>
+            <Form.Group controlId="exampleForm.ControlTextarea1">
+              <Form.Label>Instructions</Form.Label>
+              <Form.Control as="textarea" rows={3} placeholder="Instructions" onChange={(e)=>{setInstructions(e.target.value)}} />
+            </Form.Group>
+            <Button variant="primary" type="submit" onClick={addRecipe}>
+              Submit
+            </Button>
+          </Form>
+
+          <Alert variant='light' />
+
+          <Alert variant='primary'>Find Recipe</Alert>
+          <Form>
+            <Form.Group>
+              <Form.Label>Enter ID to Find</Form.Label>
+              <Form.Control placeholder="Enter ID" type="text" onChange={(e)=>{setFindRecipeID(e.target.value)}}/>
+            </Form.Group>
+            <Button variant="primary" type="submit" onClick={findRecipe}>
+              Submit
+            </Button>
+          </Form>
+          <ListGroup>
+            <ListGroup.Item>{findRecipeID}</ListGroup.Item>
+            <ListGroup.Item>{findRecipePrepTime}</ListGroup.Item>
+            <ListGroup.Item>{findRecipeInstructions}</ListGroup.Item>
+          </ListGroup>
+
+          <Alert variant='light' />
+
+          <Alert variant='primary'>Update Recipe</Alert>
+          <Form>
+            <Form.Group>
+              <Form.Label>Enter ID to Update</Form.Label>
+              <Form.Control placeholder="Enter ID" type="text" onChange={(e)=>{setUpRecipeID(e.target.value)}}/>
+            </Form.Group>
+            <Form.Group>
+              <Form.Label>Enter New PrepTime</Form.Label>
+              <Form.Control placeholder="Enter PrepTime" type="text" onChange={(e)=>{setUpPrepTime(e.target.value)}}/>
+            </Form.Group>
+            <Form.Group>
+              <Form.Label>Enter New Instructions</Form.Label>
+              <Form.Control placeholder="Enter Instructions" type="text" onChange={(e)=>{setUpInstructions(e.target.value)}}/>
+            </Form.Group>
+            <Button variant="primary" type="submit" onClick={updateRecipe}>
+              Submit
+            </Button>
+          </Form>
+
+          <Alert variant='light' />
+
+          <Alert variant='primary'>Delete Recipe</Alert>
+          <Form>
+            <Form.Group>
+              <Form.Label>Enter ID to Delete</Form.Label>
+              <Form.Control placeholder="Enter ID" type="text" onChange={(e)=>{setUpRecipeID(e.target.value)}}/>
+            </Form.Group>
+            <Button variant="primary" type="submit" onClick={deleteRecipe}>
+              Submit
+            </Button>
+          </Form>`
         </Col>
     </div>
   );

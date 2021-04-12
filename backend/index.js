@@ -135,6 +135,59 @@ app.delete("/api/deleteUser/:ID", (require, response) => {
 //     });
 // });
 
+// RECIPE
+
+app.post("/api/addRecipe", (require, response) => {
+  const ID = Math.floor((Math.random() * 100000000) + 1);
+  const prepTime = require.body.prepTime;
+  const instructions = require.body.instructions;
+
+  const sqlInsert = "INSERT INTO `Recipes` (`RecipeID`, `PrepTime`, `Ratings`, `Instructions`) VALUES (?,?,?,?)";
+  db.query(sqlInsert, [ID, prepTime, 0, instructions], (err, result) => {
+      if(err){
+          console.log(err);
+      } else{
+          console.log(result);
+      }
+  })
+});
+
+app.put("/api/updateRecipe/", (require, response) => {
+  const ID = require.body.ID;
+  const prepTime = require.body.prepTime;
+  const instructions = require.body.instructions;
+
+  const sqlUpdate = "UPDATE `Recipes` SET `PrepTime` = ? WHERE `RecipeID`= ?";
+  db.query(sqlUpdate, [prepTime, ID], (err, result) => {
+      if(err){
+          console.log(err);
+      } else{
+          console.log(result);
+      }
+  })
+  const sqlUpdatePass = "UPDATE `Recipes` SET `Instructions` = ? WHERE `RecipeID`= ?";
+  db.query(sqlUpdatePass, [instructions, ID], (err, result) => {
+      if(err){
+          console.log(err);
+      } else{
+          console.log(result);
+      }
+  })
+});
+
+app.delete("/api/deleteRecipe/:ID", (require, response) => {
+  const ID = require.params.ID;
+
+  const sqlDelete = "DELETE FROM `Recipes` WHERE `RecipeID`= ?";
+  db.query(sqlDelete, ID, (err, result) => {
+      if(err){
+          console.log(err);
+      } else{
+          console.log(result);
+      }
+  })
+});
+
 
 app.listen(3002, () => {
     console.log("running on port 3002");
