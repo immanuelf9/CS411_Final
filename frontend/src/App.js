@@ -26,6 +26,15 @@ function App() {
   const [upPrepTime, setUpPrepTime] = useState('');
   const [upInstructions, setUpInstructions] = useState('');
 
+  //Ingredient tbh func
+  const [ingredientName, setIngredientName] = useState('');
+  
+  const [findIngredientID, setFindIngredientID] = useState('');
+  const [findIngredientName, setFindIngredientName] = useState('');
+  
+  const [upIngredientID, setUpIngredientID] = useState('');
+  const [upIngredientName, setUpIngredientName] = useState('');
+
   const GET = {
     credentials: "include",
     method: "GET",
@@ -131,8 +140,46 @@ function App() {
   };
 
   const deleteRecipe = (e) => {
-    Axios.delete(`http://localhost:3002/api/deleteUser/${upRecipeID}`);
+    Axios.delete(`http://localhost:3002/api/deleteRecipe/${upRecipeID}`);
   };
+
+  //Ingredients
+  const addIngredient = (e) => {
+    Axios.post('http://localhost:3002/api/addIngredient', {
+      ingredientName: ingredientName,
+    });
+  }
+  //to be edited
+  const findIngredient = (e) => {
+    let uData = getUserData(findRecipeID);
+    console.log(uData);
+  }
+
+  const updateIngredient = (e) => {
+    Axios.put(`http://localhost:3002/api/updateIngredient`, {
+      ID: upIngredientName,
+      ingredientName: upIngredientName,
+    });
+  };
+
+  const deleteIngredient = (e) => {
+    Axios.delete(`http://localhost:3002/api/deleteIngredient/${upIngredientID}`);
+  };
+
+  const queryOne = (e) => {
+
+  };
+
+  
+  const queryTwo = (e) => {
+      
+  };
+
+  
+  const queryThree = (e) => {
+      
+  };
+
 
   return (
     <div>
@@ -274,6 +321,94 @@ function App() {
               Submit
             </Button>
           </Form>`
+        </Col>
+        <h2 className="App">Ingredients</h2>
+        <Col xs={6}>
+          <Alert variant='primary'>Add Ingredient</Alert>
+          <Form>
+            <Form.Group>
+              <Form.Label>Ingredient Name</Form.Label>
+              <Form.Control placeholder="Enter Ingredient Name" type="text" onChange={(e)=>{setIngredientName(e.target.value)}}/>
+            </Form.Group>
+            <Button variant="primary" type="submit" onClick={addIngredient}>
+              Submit
+            </Button>
+          </Form>
+
+          <Alert variant='light' />
+
+          <Alert variant='primary'>Find Ingredient</Alert>
+          <Form>
+            <Form.Group>
+              <Form.Label>Enter ID to Find</Form.Label>
+              <Form.Control placeholder="Enter ID" type="text" onChange={(e)=>{setFindIngredientID(e.target.value)}}/>
+            </Form.Group>
+            <Button variant="primary" type="submit" onClick={findIngredient}>
+              Submit
+            </Button>
+          </Form>
+          <ListGroup>
+            <ListGroup.Item>{findIngredientID}</ListGroup.Item>
+            <ListGroup.Item>{findIngredientName}</ListGroup.Item>
+          </ListGroup>
+
+          <Alert variant='light' />
+
+          <Alert variant='primary'>Update Ingredient</Alert>
+          <Form>
+            <Form.Group>
+              <Form.Label>Enter ID to Update</Form.Label>
+              <Form.Control placeholder="Enter ID" type="text" onChange={(e)=>{setUpIngredientID(e.target.value)}}/>
+            </Form.Group>
+            <Form.Group>
+              <Form.Label>Enter New Ingredient Name</Form.Label>
+              <Form.Control placeholder="Enter Ingredient Name" type="text" onChange={(e)=>{setUpIngredientName(e.target.value)}}/>
+            </Form.Group>
+            
+            <Button variant="primary" type="submit" onClick={updateIngredient}>
+              Submit
+            </Button>
+          </Form>
+
+          <Alert variant='light' />
+
+          <Alert variant='primary'>Delete Ingredient</Alert>
+          <Form>
+            <Form.Group>
+              <Form.Label>Enter ID to Delete</Form.Label>
+              <Form.Control placeholder="Enter ID" type="text" onChange={(e)=>{setUpIngredientID(e.target.value)}}/>
+            </Form.Group>
+            <Button variant="primary" type="submit" onClick={deleteIngredient}>
+              Submit
+            </Button>
+          </Form>`
+        </Col>
+      <h2 className="App">Advanced Queries</h2>
+        <Col xs={6}>
+          <Alert variant='primary'>Query 1: Find most active reviewers</Alert>
+          <Form>
+            <Button variant="primary" type="submit" onClick={queryOne}>
+              Submit
+            </Button>
+          </Form>
+
+          <Alert variant='light' />
+
+          <Alert variant='primary'>Query 2: Find users who leave a high ratings on average</Alert>
+          <Form>
+            <Button variant="primary" type="submit" onClick={queryTwo}>
+              Submit
+            </Button>
+          </Form>
+
+          <Alert variant='light' />
+
+          <Alert variant='primary'>Query 3: Find recipes that take less than 40 minutes to make with high ratings</Alert>
+          <Form>       
+            <Button variant="primary" type="submit" onClick={queryThree}>
+              Submit
+            </Button>
+          </Form>
         </Col>
     </div>
   );
