@@ -13,6 +13,39 @@ var db = mysql.createConnection({
     database:'discoveat',
 })
 
+let config = {
+    host:'127.0.0.1',
+    user: 'root',
+    password:'mypassword',
+    database:'discoveat',
+};
+
+class Database {
+    constructor( config ) {
+        this.connection = mysql.createConnection( config );
+    }
+    query( sql, args ) {
+        return new Promise( ( resolve, reject ) => {
+            this.connection.query( sql, args, ( err, rows ) => {
+                if ( err )
+                    return reject( err );
+                resolve( rows );
+            } );
+        } );
+    }
+    close() {
+        return new Promise( ( resolve, reject ) => {
+            this.connection.end( err => {
+                if ( err )
+                    return reject( err );
+                resolve();
+            } );
+        } );
+    }
+}
+
+let db_prom = new Database(config);
+
 // host: '35.202.192.135',
 //     user: 'root',
 //     password: 'group99',
@@ -72,24 +105,33 @@ app.post("/api/createUser", (require, response) => {
     })
 });
 
-app.get("/api/getUser/*", (require, response) => {
-    console.log("hi");
-    // const ID = require.query.ID;
-    let path = req.originalUrl;
-    const ID = path.substring(20, path.length);
+app.get("/api/getUser", (require, response) => {
+    const email = require.query.Email;
+    const pass = require.query.Pass;
+    let id = null;
+    let sqlSelect = "SELECT u.UserID FROM Users u WHERE u.Email = ? AND u.Password = ?";
 
-    // const ID = require.body.params.ID;
-    console.log(ID)
-
-    const sqlSelect = "SELECT u.UserID, u.Email, u.Password FROM Users u WHERE u.UserID = ?";
-    db.query(sqlSelect, [ID], (err, result) => {
-        if(err){
-            console.log(err);
-        } else{
-            console.log(result);
-            response.send(result);
+    db_prom.query(sqlSelect, [email, pass]).then((res) => {
+        id = res[0].UserID;
+        let sqlSelect = "SELECT i.IngredientName, i.IngredientID FROM Ingredients i NATURAL JOIN Owns o NATURAL JOIN Users u WHERE u.UserID = ?";
+        if(id != null){
+            console.log("hi")
+            db.query(sqlSelect, id, (err, result) => {
+                ing = [];
+                result.forEach((v) => {
+                    ing.push({ID: v.IngredientID, Name: v.IngredientName});
+                });
+                ret = {
+                    ID: id,
+                    Email: email,
+                    Pass: pass,
+                    ing: ing
+                };
+                console.log(ret);
+                response.send(ret);
+            });
         }
-    });
+    });   
 });
 
 app.put("/api/updateUser/", (require, response) => {
