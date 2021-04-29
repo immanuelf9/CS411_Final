@@ -18,7 +18,6 @@ function App() {
 
   useEffect(() => {
     let uT, user, ing;
-    
     if(window.localStorage.getItem('underPTime') != null){
       uT = JSON.parse(window.localStorage.getItem('underPTime'));
     }
@@ -99,18 +98,18 @@ function App() {
   let table = <div></div>
   if(underTime.length > 0){
     table = <ListGroup>
-      <ListGroup.Item>{underTime[0].rid + "-" + underTime[0].pTime}</ListGroup.Item>
-      <ListGroup.Item>{underTime[1].rid + "-" + underTime[1].pTime}</ListGroup.Item>
-      <ListGroup.Item>{underTime[2].rid + "-" + underTime[2].pTime}</ListGroup.Item>
-      <ListGroup.Item>{underTime[3].rid + "-" + underTime[3].pTime}</ListGroup.Item>
-      <ListGroup.Item>{underTime[4].rid + "-" + underTime[4].pTime}</ListGroup.Item>
+      <ListGroup.Item>{"ID: " + underTime[0].rid + ", Time: " + underTime[0].pTime}</ListGroup.Item>
+      <ListGroup.Item>{"ID: " + underTime[1].rid + ", Time: " + underTime[1].pTime}</ListGroup.Item>
+      <ListGroup.Item>{"ID: " + underTime[2].rid + ", Time: " + underTime[2].pTime}</ListGroup.Item>
+      <ListGroup.Item>{"ID: " + underTime[3].rid + ", Time: " + underTime[3].pTime}</ListGroup.Item>
+      <ListGroup.Item>{"ID: " + underTime[4].rid + ", Time: " + underTime[4].pTime}</ListGroup.Item>
     </ListGroup>       
   }
 
   let ingTable = <div></div>
   if(ingList.length > 0){
     const listItems = ingList.map((v) =>
-      <ListGroup.Item>{v.ID + "-" + v.Name}</ListGroup.Item>
+      <ListGroup.Item>{"ID: " + v.ID + ", Name: " + v.Name}</ListGroup.Item>
     );
     
     ingTable = <ListGroup>

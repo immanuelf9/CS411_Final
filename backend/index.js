@@ -322,12 +322,14 @@ app.get("/api/findUserReviews/", (require, response) => {
   });
 })
 
-app.get("/api/findLowPrepRecipes/", (require, response) => {
-  const sqlQuery = "SELECT rid, pTime FROM (SELECT AVG(r.Score) AS ratings, rc.recipeID AS rid, rc.PrepTime AS pTime FROM Recipes rc NATURAL JOIN Reviews r GROUPY BY rc.RecipeID) as avgRates WHERE pTime < 40 ORDER BY pTime DESC LIMIT 15";
-  db.query(sqlSelect, (err, result) => {
-           response.send(result);
-  });
-})
+app.get("/api/underPTime", (require, response) => {
+    const maxTime = require.query.time;
+    const sqlSelect = "SELECT rid, pTime FROM (SELECT AVG(r.Score) as ratings, rc.RecipeID AS rid, rc.PrepTime AS pTime FROM Recipes rc NATURAL JOIN Reviews r GROUP BY rc.RecipeID) AS avgRates WHERE pTime < ? ORDER BY pTime DESC LIMIT 5";
+    db.query(sqlSelect, maxTime, (err, result) => {
+        console.log(result);
+        response.send(result);
+    });
+});
 
 
 
