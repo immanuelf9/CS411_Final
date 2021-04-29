@@ -152,6 +152,32 @@ app.post("/api/addRecipe", (require, response) => {
   })
 });
 
+app.post("/api/addReview", (require, response) => {
+    const userID = require.body.userID;
+    const recipeID = require.body.recipeID;
+    const score = require.body.score;
+    const review = require.body.review;
+ 
+    const sqlInsert = "INSERT INTO `Reviews` (`UserID`, `RecipeID`, `SCORE`, `Review`) VALUES (?,?,?,?)";
+    db.query(sqlInsert, [userID, recipeID, score, review], (err, result) => {
+        if (err) {
+            console.log(err);
+        } else {
+            console.log(result);
+        }
+    })
+ 
+    const sqlUpdate = "CALL calculateRatings(?)"
+    db.query(sqlInsert, [recipeID], (err, result) => {
+        if (err) {
+            console.log(err);
+        } else {
+            console.log(result);
+        }
+    })
+});
+
+
 app.put("/api/updateRecipe/", (require, response) => {
   const ID = require.body.ID;
   const prepTime = require.body.prepTime;
