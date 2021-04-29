@@ -170,15 +170,6 @@ app.delete("/api/deleteUser/:ID", (require, response) => {
     })
 });
 
-// app.get("/api/get", (require, response) => {
-//     const sqlSelect = "SELECT * FROM Users";
-//     db.query(sqlSelect, (err, result) => {
-//         response.send(result);
-//     });
-// });
-
-// RECIPE
-
 app.post("/api/addRecipe", (require, response) => {
   const ID = Math.floor((Math.random() * 100000000) + 1);
   const prepTime = require.body.prepTime;
@@ -208,52 +199,6 @@ app.post("/api/addReview", (require, response) => {
             console.log(result);
         }
     })
- 
-    const sqlUpdate = "CALL calculateRatings(?)"
-    db.query(sqlInsert, [recipeID], (err, result) => {
-        if (err) {
-            console.log(err);
-        } else {
-            console.log(result);
-        }
-    })
-});
-
-
-app.put("/api/updateRecipe/", (require, response) => {
-  const ID = require.body.ID;
-  const prepTime = require.body.prepTime;
-  const instructions = require.body.instructions;
-
-  const sqlUpdate = "UPDATE `Recipes` SET `PrepTime` = ? WHERE `RecipeID`= ?";
-  db.query(sqlUpdate, [prepTime, ID], (err, result) => {
-      if(err){
-          console.log(err);
-      } else{
-          console.log(result);
-      }
-  })
-  const sqlUpdatePass = "UPDATE `Recipes` SET `Instructions` = ? WHERE `RecipeID`= ?";
-  db.query(sqlUpdatePass, [instructions, ID], (err, result) => {
-      if(err){
-          console.log(err);
-      } else{
-          console.log(result);
-      }
-  })
-});
-
-app.delete("/api/deleteRecipe/:ID", (require, response) => {
-  const ID = require.params.ID;
-
-  const sqlDelete = "DELETE FROM `Recipes` WHERE `RecipeID`= ?";
-  db.query(sqlDelete, ID, (err, result) => {
-      if(err){
-          console.log(err);
-      } else{
-          console.log(result);
-      }
-  })
 });
 
 //INGREDIENTS
@@ -269,69 +214,7 @@ app.post("/api/addIngredient", (require, response) => {
             console.log(result);
         }
     })
-  });
-  
-  app.put("/api/updateIngredient/", (require, response) => {
-    const ID = require.body.ID;
-    const ingredientName = require.body.ingredientName;
-    //const instructions = require.body.instructions;
-  
-    const sqlUpdate = "UPDATE `ingredients` SET `IngredientName` = ? WHERE `IngredientID`= ?";
-    db.query(sqlUpdate, [ingredientName, ID], (err, result) => {
-        if(err){
-            console.log(err);
-        } else{
-            console.log(result);
-        }
-    })
-    // const sqlUpdatePass = "UPDATE `Recipes` SET `Instructions` = ? WHERE `RecipeID`= ?";
-    // db.query(sqlUpdatePass, [instructions, ID], (err, result) => {
-    //     if(err){
-    //         console.log(err);
-    //     } else{
-    //         console.log(result);
-    //     }
-    // })
-  });
-  
-app.delete("/api/deleteIngredients/:ID", (require, response) => {
-    const ID = require.params.ID;
-  
-    const sqlDelete = "DELETE FROM `ingredients` WHERE `IngredientID`= ?";
-    db.query(sqlDelete, ID, (err, result) => {
-        if(err){
-            console.log(err);
-        } else{
-            console.log(result);
-        }
-    })
-  });
-
-// Advanced Queries
-app.get("/api/findUserReviews/", (require, response) => {
-    const sqlQuery = "SELECT DISTINCT u.UserID, c.RecipeID, c.Ratings FROM Users u NATURAL JOIN Reviews rs LEFT JOIN Recipes c ON rs.RecipeID = c.RecipeID GROUP BY c.RecipeID, u.UserID, HAVING AVG(c.Ratings) > 4 LIMIT 15";
-    db.query(sqlSelect, (err, result) => {
-             response.send(result);
-    });
 });
-
-app.get("/api/findUserReviews/", (require, response) => {
-  const sqlQuery = "SELECT uid, ratings FROM (SELECT AVG(r.Score) AS ratings, u.UserID as uid FROM Users u NATURAL JOIN Reviews r GROUP BY u.UserID) as avgRates WHERE ratings > 5 ORDER BY ratings DESC LIMIT 15";
-  db.query(sqlSelect, (err, result) => {
-           response.send(result);
-  });
-})
-
-app.get("/api/underPTime", (require, response) => {
-    const maxTime = require.query.time;
-    const sqlSelect = "SELECT rid, pTime FROM (SELECT AVG(r.Score) as ratings, rc.RecipeID AS rid, rc.PrepTime AS pTime FROM Recipes rc NATURAL JOIN Reviews r GROUP BY rc.RecipeID) AS avgRates WHERE pTime < ? ORDER BY pTime DESC LIMIT 5";
-    db.query(sqlSelect, maxTime, (err, result) => {
-        console.log(result);
-        response.send(result);
-    });
-});
-
-
 
 app.listen(3002, () => {
     console.log("running on port 3002");
