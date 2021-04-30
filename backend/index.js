@@ -104,6 +104,7 @@ app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 
+// USERS
 app.post("/api/createUser", (require, response) => {
     const ID = Math.floor((Math.random() * 100000000) + 1);
     const pass = require.body.pass;
@@ -184,6 +185,7 @@ app.delete("/api/deleteUser/:ID", (require, response) => {
     })
 });
 
+// RECIPES
 app.post("/api/addRecipe", (require, response) => {
   const ID = Math.floor((Math.random() * 100000000) + 1);
   const prepTime = require.body.prepTime;
@@ -199,6 +201,7 @@ app.post("/api/addRecipe", (require, response) => {
   })
 });
 
+// REVIEWS
 app.post("/api/addReview", (require, response) => {
     const userID = require.body.userID;
     const recipeID = require.body.recipeID;
@@ -215,13 +218,26 @@ app.post("/api/addReview", (require, response) => {
     })
 });
 
-//INGREDIENTS
+// INGREDIENTS
 app.post("/api/addIngredient", (require, response) => {
     const ID = Math.floor((Math.random() * 100000000) + 1);
     const ingredientName = require.body.ingredientName;
   
     const sqlInsert = "INSERT INTO `ingredients` (`IngredientID`, `IngredientName`) VALUES (?,?)";
     db.query(sqlInsert, [ID, ingredientName], (err, result) => {
+        if(err){
+            console.log(err);
+        } else{
+            console.log(result);
+        }
+    })
+});
+
+app.delete("/api/removeIngredient/:ID", (require, response) => {
+    const ID = require.params.ingredientID;
+
+    const sqlDelete = "DELETE FROM `Owns` WHERE `IngredientID`= ?";
+    db.query(sqlDelete, ID, (err, result) => {
         if(err){
             console.log(err);
         } else{

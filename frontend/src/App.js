@@ -11,6 +11,8 @@ function App() {
   const [score, setScore] = useState('');
   const [review, setReview] = useState(''); 
 
+  const [ingredientID, setIngredientID] = useState('');
+
   const [findID, setFindID] = useState('');
   const [findEmail, setFindEmail] = useState('');
   const [findPass, setFindPass] = useState('');
@@ -113,6 +115,12 @@ function App() {
     });
   };
 
+  const removeIngredient = (e) => {
+    Axios.delete('http://localhost:3002/api/removeIngredient', {
+      ingredientID: ingredientID
+    });
+  };
+
   let table = <div></div>
   if(underTime.length > 0){
     table = <ListGroup>
@@ -206,9 +214,9 @@ function App() {
             <Form>
               <Form.Group>
                 <Form.Label>Enter Ingredient ID</Form.Label>
-                <Form.Control placeholder="Ingredient ID" type="text"/>
+                <Form.Control placeholder="Ingredient ID" type="text" onChange={(e)=>{setIngredientID(e.target.value)}}/>
               </Form.Group>
-              <Button variant="primary" type="submit" onClick={getUnderPrep}>
+              <Button variant="primary" type="submit" onClick={removeIngredient}>
                 Submit
               </Button>
             </Form>
