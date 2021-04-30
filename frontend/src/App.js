@@ -127,6 +127,7 @@ function App() {
   // Remove ingredient
   const removeIngredient = (e) => {
     Axios.delete('http://localhost:3002/api/removeIngredient', {
+      userID: findID,
       ingredientID: ingredientID
     });
   };

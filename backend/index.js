@@ -235,9 +235,10 @@ app.post("/api/addIngredient", (require, response) => {
 
 app.delete("/api/removeIngredient/:ID", (require, response) => {
     const ID = require.params.ingredientID;
+    const userID = require.params.userID;
 
-    const sqlDelete = "DELETE FROM `Owns` WHERE `IngredientID`= ?";
-    db.query(sqlDelete, ID, (err, result) => {
+    const sqlDelete = "DELETE FROM `Owns` WHERE `IngredientID`= ? AND `UserID` = ?";
+    db.query(sqlDelete, [ID, userID], (err, result) => {
         if(err){
             console.log(err);
         } else{
