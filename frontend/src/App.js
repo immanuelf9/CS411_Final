@@ -139,6 +139,64 @@ function App() {
 
             <Alert variant='light' />
 
+            <Alert variant='primary'>Add Review for a Recipe</Alert>
+            <Form>
+              <Form.Group>
+                <Form.Label>Enter Recipe ID</Form.Label>
+                <Form.Control placeholder="Recipe ID" type="text"/>
+              </Form.Group>
+              <Form.Group>
+                <Form.Label>Score</Form.Label>
+                <Form.Control as="select">
+                  <option>1</option>
+                  <option>2</option>
+                  <option>3</option>
+                  <option>4</option>
+                  <option>5</option>
+                  <option>6</option>
+                  <option>7</option>
+                  <option>8</option>
+                  <option>9</option>
+                  <option>10</option>
+                </Form.Control>
+              </Form.Group>
+              <Form.Group>
+                <Form.Label>Enter Your Review</Form.Label>
+                <Form.Control as="textarea" rows={3} placeholder="Review" type="text"/>
+              </Form.Group>
+              <Button variant="primary" type="submit" onClick={getUnderPrep}>
+                Submit
+              </Button>
+            </Form>
+
+            <Alert variant='light' />
+
+            <Alert variant='primary'>Add Ingredient to Your Fridge</Alert>
+            <Form>
+              <Form.Group>
+                <Form.Label>Enter Ingredient Name</Form.Label>
+                <Form.Control placeholder="Ingredient" type="text"/>
+              </Form.Group>
+              <Button variant="primary" type="submit" onClick={getUnderPrep}>
+                Submit
+              </Button>
+            </Form>
+
+            <Alert variant='light' />
+
+            <Alert variant='primary'>Remove Ingredient From Fridge</Alert>
+            <Form>
+              <Form.Group>
+                <Form.Label>Enter Ingredient ID</Form.Label>
+                <Form.Control placeholder="Ingredient ID" type="text"/>
+              </Form.Group>
+              <Button variant="primary" type="submit" onClick={getUnderPrep}>
+                Submit
+              </Button>
+            </Form>
+
+            <Alert variant='light' />
+
             <Alert variant='primary'>Find Recipes under a Prep Time</Alert>
             <Form>
               <Form.Group controlId="formBasicEmail">
