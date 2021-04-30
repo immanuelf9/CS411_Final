@@ -7,6 +7,10 @@ function App() {
   const [email, setEmail] = useState('');
   const [pass, setPass] = useState('');
 
+  const [recipeID, setRecipeID] = useState('');
+  const [score, setScore] = useState('');
+  const [review, setReview] = useState(''); 
+
   const [findID, setFindID] = useState('');
   const [findEmail, setFindEmail] = useState('');
   const [findPass, setFindPass] = useState('');
@@ -43,6 +47,7 @@ function App() {
     }
   },[]);
 
+  // Create an account, add a user to the database
   const addUser = (e) => {
     Axios.post('http://localhost:3002/api/createUser', {
       ID: email,
@@ -50,6 +55,7 @@ function App() {
     });
   }
 
+  // Find user, log in
   const findUser = (e) => {
     Axios.get('http://localhost:3002/api/getUser', {
       params: {
@@ -74,6 +80,7 @@ function App() {
     })
   };
 
+  // Log out
   const logout = (e) => {
     window.localStorage.setItem('user', JSON.stringify({}));
     window.localStorage.setItem('userIng', JSON.stringify([]));
@@ -84,6 +91,7 @@ function App() {
     setIngList([]);
   }
 
+  // Find recipes under a prep time
   const getUnderPrep = (e) => {
     Axios.get('http://localhost:3002/api/underPTime', {
       params: {
@@ -93,6 +101,16 @@ function App() {
       console.log(res);
       window.localStorage.setItem('underPTime', JSON.stringify(res));
     })
+  };
+
+  // Add review
+  const addReview = (e) => {
+    Axios.post('http://localhost:3002/api/addReview', {
+      userID: recipeID,
+      recipeID: recipeID,
+      score: score,
+      review: review
+    });
   };
 
   let table = <div></div>
@@ -143,11 +161,11 @@ function App() {
             <Form>
               <Form.Group>
                 <Form.Label>Enter Recipe ID</Form.Label>
-                <Form.Control placeholder="Recipe ID" type="text"/>
+                <Form.Control placeholder="Recipe ID" type="text" onChange={(e)=>{setRecipeID(e.target.value)}}/>
               </Form.Group>
               <Form.Group>
                 <Form.Label>Score</Form.Label>
-                <Form.Control as="select">
+                <Form.Control as="select" onChange={(e)=>{setScore(e.target.value)}}>
                   <option>1</option>
                   <option>2</option>
                   <option>3</option>
@@ -162,9 +180,9 @@ function App() {
               </Form.Group>
               <Form.Group>
                 <Form.Label>Enter Your Review</Form.Label>
-                <Form.Control as="textarea" rows={3} placeholder="Review" type="text"/>
+                <Form.Control as="textarea" rows={3} placeholder="Review" type="text" onChange={(e)=>{setReview(e.target.value)}}/>
               </Form.Group>
-              <Button variant="primary" type="submit" onClick={getUnderPrep}>
+              <Button variant="primary" type="submit" onClick={addReview}>
                 Submit
               </Button>
             </Form>

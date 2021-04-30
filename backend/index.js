@@ -230,6 +230,15 @@ app.post("/api/addIngredient", (require, response) => {
     })
 });
 
+app.get("/api/underPTime", (require, response) => {
+    const maxTime = require.query.time;
+    const sqlSelect = "SELECT rid, pTime FROM (SELECT AVG(r.Score) as ratings, rc.RecipeID AS rid, rc.PrepTime AS pTime FROM Recipes rc NATURAL JOIN Reviews r GROUP BY rc.RecipeID) AS avgRates WHERE pTime < ? ORDER BY pTime DESC LIMIT 5";
+    db.query(sqlSelect, maxTime, (err, result) => {
+        console.log(result);
+        response.send(result);
+    });
+});
+
 const port = process.env.PORT || 3000;
 app.set('port', port);
 
