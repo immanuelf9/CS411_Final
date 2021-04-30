@@ -5,20 +5,33 @@ const mysql = require("mysql");
 const cors = require("cors");
 const fs = require('fs');
 
-
-var db = mysql.createConnection({
-    host:'127.0.0.1',
-    user: 'root',
-    password:'mypassword',
-    database:'discoveat',
-})
-
 let config = {
-    host:'127.0.0.1',
-    user: 'root',
-    password:'mypassword',
-    database:'discoveat',
-};
+    user: process.env.SQL_USER,
+    database: process.env.SQL_DATABASE,
+    password: process.env.SQL_PASSWORD,
+}
+
+if (process.env.INSTANCE_CONNECTION_NAME && process.env.NODE_ENV === 'production') {
+  config.socketPath = `/cloudsql/${process.env.INSTANCE_CONNECTION_NAME}`;
+}
+
+// let connection = mysql.createConnection(config);
+
+// Database Connection for Development
+
+// var db = mysql.createConnection({
+//     host:'127.0.0.1',
+//     user: 'root',
+//     password:'mypassword',
+//     database:'discoveat',
+// })
+
+// let config = {
+//     host:'127.0.0.1',
+//     user: 'root',
+//     password:'mypassword',
+//     database:'discoveat',
+// };
 
 class Database {
     constructor( config ) {
@@ -44,6 +57,7 @@ class Database {
     }
 }
 
+var db = mysql.createConnection(config);
 let db_prom = new Database(config);
 
 // host: '35.202.192.135',
@@ -216,7 +230,9 @@ app.post("/api/addIngredient", (require, response) => {
     })
 });
 
-app.listen(3002, () => {
-    console.log("running on port 3002");
-})
+const port = process.env.PORT || 3000;
+app.set('port', port);
 
+app.listen(port, () => {
+    console.log("running on port");
+})
