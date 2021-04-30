@@ -8,10 +8,10 @@ function App() {
   const [pass, setPass] = useState('');
 
   const [recipeID, setRecipeID] = useState('');
-  const [score, setScore] = useState('');
+  const [score, setScore] = useState(1);
   const [review, setReview] = useState(''); 
 
-  const [minScore, setMinScore] = useState('');
+  const [minScore, setMinScore] = useState(1);
 
   const [ingredientID, setIngredientID] = useState('');
   const [ingredientName, setIngredientName] = useState('');
@@ -27,21 +27,24 @@ function App() {
 
   useEffect(() => {
     let uT, user, ing;
+
     if(window.localStorage.getItem('underPTime') != null){
       uT = JSON.parse(window.localStorage.getItem('underPTime'));
     }
+    console.log(uT);
+
     if(window.localStorage.getItem('user') != null){
       user = JSON.parse(window.localStorage.getItem('user'));
     }
+
     if(window.localStorage.getItem('userIng') != null){
       ing = JSON.parse(window.localStorage.getItem('userIng'));
     }
     
-    if(uT && uT.data){
-      setRecipes(uT.data);
-      console.log(uT.data);
+    if(uT && uT[0]){
+      setRecipes(uT[0]);
     }
-    
+
     if(user && user.UserID){
       setFindID(user.UserID);
       setFindEmail(user.Email);
@@ -82,7 +85,7 @@ function App() {
         window.localStorage.setItem('userIng', JSON.stringify(res.data.ing));
       }else{
         window.localStorage.setItem('userIng', JSON.stringify([]));
-      };
+      }
     })
   };
 
@@ -106,13 +109,13 @@ function App() {
         userID: findID
       }
     }).then((res) => {
-      console.log(res);
       window.localStorage.setItem('underPTime', JSON.stringify(res));
     })
   };
 
   // Add review
   const addReview = (e) => {
+    console.log(score);
     Axios.post('http://localhost:3002/api/addReview', {
       userID: findID,
       recipeID: recipeID,
@@ -123,17 +126,32 @@ function App() {
 
   // Add ingredient
   const addIngredient = (e) => {
-    Axios.post('http://localhost:3002/api/addIngredient', {
-      userID: findID,
-      ingredientName:ingredientName
+    Axios.get('http://localhost:3002/api/addIngredient', {
+      params: {
+        userID: findID,
+        ingredientName:ingredientName
+      }
+    }).then((res) => {
+      // window.localStorage.setItem('res', JSON.stringify(res));
+      if(res.data && res.data[0]){
+        window.localStorage.setItem('userIng', JSON.stringify(res.data));
+      }
     });
   };
 
   // Remove ingredient
   const removeIngredient = (e) => {
-    Axios.delete('http://localhost:3002/api/removeIngredient', {
-      userID: findID,
-      ingredientID: ingredientID
+    Axios.get('http://localhost:3002/api/removeIngredient', {
+      params: {
+        userID: findID,
+        ingredientID: ingredientID
+      }
+    }).then((res) => {
+      if(res.data && res.data[0]){
+        window.localStorage.setItem('userIng', JSON.stringify(res.data));
+      }else{
+        window.localStorage.setItem('userIng', JSON.stringify([]));
+      }
     });
   };
 

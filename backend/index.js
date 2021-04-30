@@ -5,33 +5,30 @@ const mysql = require("mysql");
 const cors = require("cors");
 const fs = require('fs');
 
-let config = {
-    user: process.env.SQL_USER,
-    database: process.env.SQL_DATABASE,
-    password: process.env.SQL_PASSWORD,
-}
+// let config = {
+//     user: process.env.SQL_USER,
+//     database: process.env.SQL_DATABASE,
+//     password: process.env.SQL_PASSWORD,
+// }
 
-if (process.env.INSTANCE_CONNECTION_NAME && process.env.NODE_ENV === 'production') {
-  config.socketPath = `/cloudsql/${process.env.INSTANCE_CONNECTION_NAME}`;
-}
-
-// let connection = mysql.createConnection(config);
-
+// if (process.env.INSTANCE_CONNECTION_NAME && process.env.NODE_ENV === 'production') {
+//   config.socketPath = `/cloudsql/${process.env.INSTANCE_CONNECTION_NAME}`;
+// }
 // Database Connection for Development
 
-// var db = mysql.createConnection({
-//     host:'127.0.0.1',
-//     user: 'root',
-//     password:'mypassword',
-//     database:'discoveat',
-// })
+var db = mysql.createConnection({
+    host:'127.0.0.1',
+    user: 'root',
+    password:'mypassword',
+    database:'discoveat',
+})
 
-// let config = {
-//     host:'127.0.0.1',
-//     user: 'root',
-//     password:'mypassword',
-//     database:'discoveat',
-// };
+let config = {
+    host:'127.0.0.1',
+    user: 'root',
+    password:'mypassword',
+    database:'discoveat',
+};
 
 class Database {
     constructor( config ) {
@@ -57,7 +54,7 @@ class Database {
     }
 }
 
-var db = mysql.createConnection(config);
+// var db = mysql.createConnection(config);
 let db_prom = new Database(config);
 
 // host: '35.202.192.135',
@@ -125,9 +122,10 @@ app.get("/api/getUser", (require, response) => {
     const pass = require.query.Pass;
     let id = null;
     let sqlSelect = "SELECT u.UserID FROM Users u WHERE u.Email = ? AND u.Password = ?";
-
+    console.log(email, pass);
     db_prom.query(sqlSelect, [email, pass]).then((res) => {
         id = res[0].UserID;
+        console.log(id);
         let sqlSelect = "SELECT i.IngredientName, i.IngredientID FROM Ingredients i NATURAL JOIN Owns o NATURAL JOIN Users u WHERE u.UserID = ?";
         if(id != null){
             console.log("hi")
@@ -219,31 +217,57 @@ app.post("/api/addReview", (require, response) => {
 });
 
 // INGREDIENTS
-app.post("/api/addIngredient", (require, response) => {
-    const ingredientName = require.body.ingredientName;
-    const userID = require.body.userID;
+app.get("/api/addIngredient", (require, response) => {
+    const ingredientName = require.query.ingredientName;
+    const userID = require.query.userID;
+    console.log(userID)
   
     const sqlInsert = "CALL addIngredient(?, ?)";
-    db.query(sqlInsert, [ingredientName, userID], (err, result) => {
+    console.log("hey1");
+    db_prom.query(sqlInsert, [ingredientName, userID], (err, result) => {
+        console.log("hey2");
         if(err){
             console.log(err);
         } else{
             console.log(result);
         }
+    }).then((res) => {
+        let sqlSelect = "SELECT i.IngredientName, i.IngredientID FROM Ingredients i NATURAL JOIN Owns o NATURAL JOIN Users u WHERE u.UserID = ?";
+        console.log("hey4");
+        db.query(sqlSelect, userID, (err, result) => {
+            ing = [];
+            result.forEach((v) => {
+                ing.push({ID: v.IngredientID, Name: v.IngredientName});
+            });
+            console.log(ing);
+            response.send(ing);
+        });
+        
     })
 });
 
-app.delete("/api/removeIngredient/:ID", (require, response) => {
-    const ID = require.params.ingredientID;
-    const userID = require.params.userID;
+app.get("/api/removeIngredient", (require, response) => {
+    const ID = require.query.ingredientID;
+    const userID = require.query.userID;
 
     const sqlDelete = "DELETE FROM `Owns` WHERE `IngredientID`= ? AND `UserID` = ?";
-    db.query(sqlDelete, [ID, userID], (err, result) => {
+    db_prom.query(sqlDelete, [ID, userID], (err, result) => {
         if(err){
             console.log(err);
         } else{
             console.log(result);
         }
+    }).then((res) => {
+        let sqlSelect = "SELECT i.IngredientName, i.IngredientID FROM Ingredients i NATURAL JOIN Owns o NATURAL JOIN Users u WHERE u.UserID = ?";
+        
+        db.query(sqlSelect, userID, (err, result) => {
+            ing = [];
+            result.forEach((v) => {
+                ing.push({ID: v.IngredientID, Name: v.IngredientName});
+            });
+            console.log(ing);
+            response.send(ing);
+        });
     })
 });
 
@@ -261,7 +285,7 @@ app.get("/api/findRecipes", (require, response) => {
     });
 });
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3002;
 app.set('port', port);
 
 app.listen(port, () => {
