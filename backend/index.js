@@ -216,7 +216,9 @@ app.post("/api/addIngredient", (require, response) => {
     })
 });
 
-app.listen(3002, () => {
-    console.log("running on port 3002");
-})
+const port = process.env.PORT || 3000;
+app.set('port', port);
 
+app.listen(port, () => {
+    console.log("running on port");
+})
