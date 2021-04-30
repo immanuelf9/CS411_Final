@@ -12,6 +12,7 @@ function App() {
   const [review, setReview] = useState(''); 
 
   const [ingredientID, setIngredientID] = useState('');
+  const [ingredientName, setIngredientName] = useState('');
 
   const [findID, setFindID] = useState('');
   const [findEmail, setFindEmail] = useState('');
@@ -115,6 +116,14 @@ function App() {
     });
   };
 
+  // Add ingredient
+  const addIngredient = (e) => {
+    Axios.post('http://localhost:3002/api/addIngredient', {
+      ingredientName:ingredientName
+    });
+  };
+
+  // Remove ingredient
   const removeIngredient = (e) => {
     Axios.delete('http://localhost:3002/api/removeIngredient', {
       ingredientID: ingredientID
@@ -201,9 +210,9 @@ function App() {
             <Form>
               <Form.Group>
                 <Form.Label>Enter Ingredient Name</Form.Label>
-                <Form.Control placeholder="Ingredient" type="text"/>
+                <Form.Control placeholder="Ingredient" type="text" onChange={(e)=>{setIngredientName(e.target.value)}}/>
               </Form.Group>
-              <Button variant="primary" type="submit" onClick={getUnderPrep}>
+              <Button variant="primary" type="submit" onClick={addIngredient}>
                 Submit
               </Button>
             </Form>

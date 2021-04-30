@@ -220,11 +220,10 @@ app.post("/api/addReview", (require, response) => {
 
 // INGREDIENTS
 app.post("/api/addIngredient", (require, response) => {
-    const ID = Math.floor((Math.random() * 100000000) + 1);
     const ingredientName = require.body.ingredientName;
   
-    const sqlInsert = "INSERT INTO `ingredients` (`IngredientID`, `IngredientName`) VALUES (?,?)";
-    db.query(sqlInsert, [ID, ingredientName], (err, result) => {
+    const sqlInsert = "CALL addIngredient(?)";
+    db.query(sqlInsert, [ingredientName], (err, result) => {
         if(err){
             console.log(err);
         } else{
