@@ -109,7 +109,7 @@ function App() {
   // Add review
   const addReview = (e) => {
     Axios.post('http://localhost:3002/api/addReview', {
-      userID: recipeID,
+      userID: findID,
       recipeID: recipeID,
       score: score,
       review: review
@@ -119,6 +119,7 @@ function App() {
   // Add ingredient
   const addIngredient = (e) => {
     Axios.post('http://localhost:3002/api/addIngredient', {
+      userID: findID,
       ingredientName:ingredientName
     });
   };

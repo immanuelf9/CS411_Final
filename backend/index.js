@@ -221,9 +221,10 @@ app.post("/api/addReview", (require, response) => {
 // INGREDIENTS
 app.post("/api/addIngredient", (require, response) => {
     const ingredientName = require.body.ingredientName;
+    const userID = require.body.userID;
   
-    const sqlInsert = "CALL addIngredient(?)";
-    db.query(sqlInsert, [ingredientName], (err, result) => {
+    const sqlInsert = "CALL addIngredient(?, ?)";
+    db.query(sqlInsert, [ingredientName, userID], (err, result) => {
         if(err){
             console.log(err);
         } else{
