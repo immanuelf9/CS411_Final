@@ -11,6 +11,8 @@ function App() {
   const [score, setScore] = useState('');
   const [review, setReview] = useState(''); 
 
+  const [minScore, setMinScore] = useState('');
+
   const [ingredientID, setIngredientID] = useState('');
   const [ingredientName, setIngredientName] = useState('');
 
@@ -21,7 +23,7 @@ function App() {
   const [ingList, setIngList] = useState([]);
 
   const [pTime, setPTime] = useState('');
-  const [underTime, setUnderTime] = useState([]);
+  const [recipes, setRecipes] = useState([]);
 
   useEffect(() => {
     let uT, user, ing;
@@ -36,7 +38,7 @@ function App() {
     }
     
     if(uT && uT.data){
-      setUnderTime(uT.data);
+      setRecipes(uT.data);
     }
     
     if(user && user.UserID){
@@ -95,10 +97,12 @@ function App() {
   }
 
   // Find recipes under a prep time
-  const getUnderPrep = (e) => {
-    Axios.get('http://localhost:3002/api/underPTime', {
+  const findRecipes = (e) => {
+    Axios.get('http://localhost:3002/api/findRecipes', {
       params: {
-        time: pTime
+        time: pTime,
+        minScore: minScore,
+        userID: findID
       }
     }).then((res) => {
       console.log(res);
@@ -133,13 +137,13 @@ function App() {
   };
 
   let table = <div></div>
-  if(underTime.length > 0){
+  if(recipes.length > 0){
     table = <ListGroup>
-      <ListGroup.Item>{"ID: " + underTime[0].rid + ", Time: " + underTime[0].pTime}</ListGroup.Item>
-      <ListGroup.Item>{"ID: " + underTime[1].rid + ", Time: " + underTime[1].pTime}</ListGroup.Item>
-      <ListGroup.Item>{"ID: " + underTime[2].rid + ", Time: " + underTime[2].pTime}</ListGroup.Item>
-      <ListGroup.Item>{"ID: " + underTime[3].rid + ", Time: " + underTime[3].pTime}</ListGroup.Item>
-      <ListGroup.Item>{"ID: " + underTime[4].rid + ", Time: " + underTime[4].pTime}</ListGroup.Item>
+      <ListGroup.Item>{"ID: " + recipes[0].RecipeID + ", Time: " + recipes[0].PrepTime + ", Ratings: " +  recipes[0].Ratings + ", Instructions: " + recipes[0].Instructions}</ListGroup.Item>
+      <ListGroup.Item>{"ID: " + recipes[1].RecipeID + ", Time: " + recipes[1].PrepTime + ", Ratings: " +  recipes[1].Ratings + ", Instructions: " + recipes[1].Instructions}</ListGroup.Item>
+      <ListGroup.Item>{"ID: " + recipes[2].RecipdID + ", Time: " + recipes[2].PrepTime + ", Ratings: " +  recipes[2].Ratings + ", Instructions: " + recipes[2].Instructions}</ListGroup.Item>
+      <ListGroup.Item>{"ID: " + recipes[3].RecipeID + ", Time: " + recipes[3].PrepTime + ", Ratings: " +  recipes[3].Ratings + ", Instructions: " + recipes[3].Instructions}</ListGroup.Item>
+      <ListGroup.Item>{"ID: " + recipes[4].RecipeID + ", Time: " + recipes[4].PrepTime + ", Ratings: " +  recipes[4].Ratings + ", Instructions: " + recipes[4].Instructions}</ListGroup.Item>
     </ListGroup>       
   }
 
@@ -234,13 +238,28 @@ function App() {
 
             <Alert variant='light' />
 
-            <Alert variant='primary'>Find Recipes under a Prep Time</Alert>
+            <Alert variant='primary'>Find Recipes</Alert>
             <Form>
-              <Form.Group controlId="formBasicEmail">
-                <Form.Label>Enter Prep Time</Form.Label>
-                <Form.Control placeholder="Enter Time in mins" onChange={(e)=>{setPTime(e.target.value)}}/>
+              <Form.Group>
+                <Form.Label>Enter Maximum Prep Time</Form.Label>
+                <Form.Control placeholder="Enter Time in Mins" type="text" onChange={(e)=>{setPTime(e.target.value)}}/>
               </Form.Group>
-              <Button variant="primary" type="submit" onClick={getUnderPrep}>
+              <Form.Group>
+                <Form.Label>Select Minimum Rating</Form.Label>
+                <Form.Control as="select" onChange={(e)=>{setMinScore(e.target.value)}}>
+                  <option>1</option>
+                  <option>2</option>
+                  <option>3</option>
+                  <option>4</option>
+                  <option>5</option>
+                  <option>6</option>
+                  <option>7</option>
+                  <option>8</option>
+                  <option>9</option>
+                  <option>10</option>
+                </Form.Control>
+              </Form.Group>
+              <Button variant="primary" type="submit" onClick={findRecipes}>
                 Submit
               </Button>
             </Form>

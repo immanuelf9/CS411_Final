@@ -247,10 +247,15 @@ app.delete("/api/removeIngredient/:ID", (require, response) => {
     })
 });
 
-app.get("/api/underPTime", (require, response) => {
+app.get("/api/findRecipes", (require, response) => {
     const maxTime = require.query.time;
-    const sqlSelect = "SELECT rid, pTime FROM (SELECT AVG(r.Score) as ratings, rc.RecipeID AS rid, rc.PrepTime AS pTime FROM Recipes rc NATURAL JOIN Reviews r GROUP BY rc.RecipeID) AS avgRates WHERE pTime < ? ORDER BY pTime DESC LIMIT 5";
-    db.query(sqlSelect, maxTime, (err, result) => {
+    const minScore = require.query.minScore;
+    const userID = require.query.userID;
+
+    //const sqlSelect = "SELECT rid, pTime FROM (SELECT AVG(r.Score) as ratings, rc.RecipeID AS rid, rc.PrepTime AS pTime FROM Recipes rc NATURAL JOIN Reviews r GROUP BY rc.RecipeID) AS avgRates WHERE pTime < ? ORDER BY pTime DESC LIMIT 5";
+    const sqlSelect = "CALL FindRecipes(?,?,?)";
+
+    db.query(sqlSelect, [maxTime, minScore, userID], (err, result) => {
         console.log(result);
         response.send(result);
     });
