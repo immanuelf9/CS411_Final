@@ -39,6 +39,7 @@ function App() {
     
     if(uT && uT.data){
       setRecipes(uT.data);
+      console.log(uT.data);
     }
     
     if(user && user.UserID){
@@ -138,13 +139,13 @@ function App() {
 
   let table = <div></div>
   if(recipes.length > 0){
+    const listRecipes = recipes.map((v) =>
+      <ListGroup.Item>{"ID: " + v.RecipeID + ", Time: " + v.PrepTime + ", Ratings: " +  v.Ratings + ", Instructions: " + v.Instructions}</ListGroup.Item>
+    );
+  
     table = <ListGroup>
-      <ListGroup.Item>{"ID: " + recipes[0].RecipeID + ", Time: " + recipes[0].PrepTime + ", Ratings: " +  recipes[0].Ratings + ", Instructions: " + recipes[0].Instructions}</ListGroup.Item>
-      <ListGroup.Item>{"ID: " + recipes[1].RecipeID + ", Time: " + recipes[1].PrepTime + ", Ratings: " +  recipes[1].Ratings + ", Instructions: " + recipes[1].Instructions}</ListGroup.Item>
-      <ListGroup.Item>{"ID: " + recipes[2].RecipdID + ", Time: " + recipes[2].PrepTime + ", Ratings: " +  recipes[2].Ratings + ", Instructions: " + recipes[2].Instructions}</ListGroup.Item>
-      <ListGroup.Item>{"ID: " + recipes[3].RecipeID + ", Time: " + recipes[3].PrepTime + ", Ratings: " +  recipes[3].Ratings + ", Instructions: " + recipes[3].Instructions}</ListGroup.Item>
-      <ListGroup.Item>{"ID: " + recipes[4].RecipeID + ", Time: " + recipes[4].PrepTime + ", Ratings: " +  recipes[4].Ratings + ", Instructions: " + recipes[4].Instructions}</ListGroup.Item>
-    </ListGroup>       
+      {listRecipes}
+    </ListGroup>     
   }
 
   let ingTable = <div></div>
